@@ -33,6 +33,7 @@ public class Menu extends javax.swing.JFrame {
         content5.setVisible(false);
         getBarangData();
         getTransaksiData();
+        getKategoriData();
         
     }
     private void getBarangData(){
@@ -81,6 +82,30 @@ public class Menu extends javax.swing.JFrame {
             
             Object rowData[] = {i++, barangNama, clientNama, tanggal, status};
             transaksiModel.addRow(rowData);
+        }
+        rs.close();
+        st.close();
+    } catch (Exception e) {
+        Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, e);
+    }
+}
+    private void getKategoriData(){
+    DefaultTableModel kategoriModel = (DefaultTableModel) tbl_kategori.getModel();
+    kategoriModel.setRowCount(0);
+    int i = 1;
+    
+    try {
+        String query = "SELECT id, nama, description FROM kategori";
+        PreparedStatement st = conn.prepareStatement(query);
+        ResultSet rs = st.executeQuery();
+        
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String nama = rs.getString("nama");
+            String deskripsi = rs.getString("description");
+            
+            Object rowData[] = {i++, id, nama, deskripsi};
+            kategoriModel.addRow(rowData);
         }
         rs.close();
         st.close();
@@ -163,7 +188,7 @@ public class Menu extends javax.swing.JFrame {
         jTextField8 = new javax.swing.JTextField();
         content5 = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
-        tbl_barang2 = new javax.swing.JTable();
+        tbl_kategori = new javax.swing.JTable();
         jLabel18 = new javax.swing.JLabel();
         t_searching2 = new javax.swing.JTextField();
 
@@ -684,7 +709,7 @@ public class Menu extends javax.swing.JFrame {
                     .addComponent(jLabel21)
                     .addComponent(jTextField8)
                     .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE))
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addContainerGap(65, Short.MAX_VALUE))
             .addGroup(content4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(content4Layout.createSequentialGroup()
                     .addGap(55, 55, 55)
@@ -727,18 +752,25 @@ public class Menu extends javax.swing.JFrame {
 
         content5.setBackground(new java.awt.Color(255, 255, 255));
 
-        tbl_barang2.setModel(new javax.swing.table.DefaultTableModel(
+        tbl_kategori.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "No", "Nama", "Nama Pengirim", "Alamat Tujuan", "Status"
+                "No", "Nama", "Deskripsi"
             }
-        ));
-        jScrollPane7.setViewportView(tbl_barang2);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane7.setViewportView(tbl_kategori);
 
         jLabel18.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel18.setText("List Kategori");
@@ -1092,7 +1124,7 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JLabel t_welcome_name;
     private javax.swing.JLabel t_welcome_name1;
     private javax.swing.JTable tbl_barang;
-    private javax.swing.JTable tbl_barang2;
+    private javax.swing.JTable tbl_kategori;
     private javax.swing.JTable tbl_transaksi;
     // End of variables declaration//GEN-END:variables
 }
