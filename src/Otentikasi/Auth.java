@@ -67,6 +67,7 @@ public class Auth extends javax.swing.JFrame {
 
         p_register.setBackground(new java.awt.Color(255, 255, 255));
 
+        jLabel5.setIcon(new javax.swing.ImageIcon("C:\\Users\\hamud\\Downloads\\Group 3.png")); // NOI18N
         jLabel5.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel5MouseClicked(evt);
@@ -171,11 +172,12 @@ public class Auth extends javax.swing.JFrame {
                 .addComponent(rgstToLogin)
                 .addGap(18, 18, 18)
                 .addComponent(btn_rgst_press, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         p_login.setBackground(new java.awt.Color(255, 255, 255));
 
+        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\hamud\\Downloads\\Group 3.png")); // NOI18N
         jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel1MouseClicked(evt);
@@ -263,14 +265,6 @@ public class Auth extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
-        
-    }//GEN-LAST:event_jLabel1MouseClicked
-
-    private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jLabel5MouseClicked
-
     private void lgnToRgstMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lgnToRgstMouseClicked
         p_register.setVisible(true);
         p_login.setVisible(false);
@@ -295,7 +289,7 @@ public class Auth extends javax.swing.JFrame {
             return;
         }
         try {
-            String query = "Select * from users where username=? or email=?";
+            String query = "Select * from user where username=? or email=?";
             PreparedStatement st = conn.prepareStatement(query);
             st.setString(1, username);
             st.setString(2, username);
@@ -397,6 +391,14 @@ public class Auth extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_rgst_pressActionPerformed
+
+    private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jLabel5MouseClicked
+
+    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+
+    }//GEN-LAST:event_jLabel1MouseClicked
 
     /**
      * @param args the command line arguments
