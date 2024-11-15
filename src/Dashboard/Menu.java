@@ -189,7 +189,7 @@ public class Menu extends javax.swing.JFrame {
         sideContainer.setBackground(new java.awt.Color(255, 255, 255));
         sideContainer.setPreferredSize(new java.awt.Dimension(318, 600));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\Asus\\Downloads\\Group 3.png")); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\hamud\\Downloads\\Group 3.png")); // NOI18N
         jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel1MouseClicked(evt);
@@ -357,7 +357,7 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(t_welcome_name)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(t_welcome_name1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(129, Short.MAX_VALUE))
+                .addContainerGap(130, Short.MAX_VALUE))
         );
         mainContentLayout.setVerticalGroup(
             mainContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -553,6 +553,11 @@ public class Menu extends javax.swing.JFrame {
         t_searching.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 t_searchingActionPerformed(evt);
+            }
+        });
+        t_searching.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_searchingKeyTyped(evt);
             }
         });
 
@@ -976,6 +981,36 @@ public class Menu extends javax.swing.JFrame {
     private void jTextField8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField8ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField8ActionPerformed
+
+    private void t_searchingKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_searchingKeyTyped
+        DefaultTableModel barangModel = (DefaultTableModel) tbl_barang.getModel();
+        barangModel.setRowCount(0);
+        int i=1;
+        String key = t_searching.getText();
+        try {
+            String query = "SELECT barang.id as id, barang.nama AS barang_name, client.nama AS client_name, barang.alamat_penerima AS alamat_tujuan FROM barang JOIN client ON barang.fk_client = client.id WHERE barang.id LIKE ? OR barang.nama LIKE ? OR client.nama LIKE ? OR barang.alamat_penerima LIKE ?";
+            PreparedStatement st = conn.prepareStatement(query);
+            st.setString(1, "%"+ key + "%");
+            st.setString(2, "%"+ key + "%");
+            st.setString(3, "%"+ key + "%");
+            st.setString(4, "%"+ key + "%");
+            ResultSet rs = st.executeQuery();
+            
+            while(rs.next()){
+                int id = rs.getInt("id");
+                String barangNama= rs.getString("barang_name");
+                String clientNama = rs.getString("client_name");
+                String alamat = rs.getString("alamat_tujuan");
+                
+                Object rowData[]= {i++,barangNama, clientNama, alamat};
+                barangModel.addRow(rowData);
+            }
+            rs.close();
+            st.close();
+        } catch (Exception e) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null,e);
+        }
+    }//GEN-LAST:event_t_searchingKeyTyped
 
     public void setWelcomeName(String name) {
         t_welcome_name1.setText(name);
