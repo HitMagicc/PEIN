@@ -32,6 +32,7 @@ public class Menu extends javax.swing.JFrame {
         content4.setVisible(false);
         content5.setVisible(false);
         getBarangData();
+        getTransaksiData();
         
     }
     private void getBarangData(){
@@ -58,6 +59,36 @@ public class Menu extends javax.swing.JFrame {
             Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null,e);
         }
     }
+    
+    private void getTransaksiData(){
+    DefaultTableModel transaksiModel = (DefaultTableModel) tbl_transaksi.getModel();
+    transaksiModel.setRowCount(0);
+    int i = 1;
+    
+    try {
+        String query = "SELECT barang.nama AS barang_name, client.nama AS client_name, transaksi.tanggal, transaksi.status " +
+                       "FROM transaksi " +
+                       "JOIN barang ON transaksi.fk_barang = barang.id " +
+                       "JOIN client ON transaksi.fk_client = client.id";
+        PreparedStatement st = conn.prepareStatement(query);
+        ResultSet rs = st.executeQuery();
+        
+        while (rs.next()) {
+            String barangNama = rs.getString("barang_name");
+            String clientNama = rs.getString("client_name");
+            String tanggal = rs.getString("tanggal");
+            String status = rs.getString("status");
+            
+            Object rowData[] = {i++, barangNama, clientNama, tanggal, status};
+            transaksiModel.addRow(rowData);
+        }
+        rs.close();
+        st.close();
+    } catch (Exception e) {
+        Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, e);
+    }
+}
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -118,7 +149,7 @@ public class Menu extends javax.swing.JFrame {
         content3 = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
         jScrollPane6 = new javax.swing.JScrollPane();
-        tbl_barang1 = new javax.swing.JTable();
+        tbl_transaksi = new javax.swing.JTable();
         t_searching1 = new javax.swing.JTextField();
         content4 = new javax.swing.JPanel();
         jScrollPane8 = new javax.swing.JScrollPane();
@@ -158,7 +189,7 @@ public class Menu extends javax.swing.JFrame {
         sideContainer.setBackground(new java.awt.Color(255, 255, 255));
         sideContainer.setPreferredSize(new java.awt.Dimension(318, 600));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Group 3.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\Asus\\Downloads\\Group 3.png")); // NOI18N
         jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel1MouseClicked(evt);
@@ -326,7 +357,7 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(t_welcome_name)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(t_welcome_name1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(124, Short.MAX_VALUE))
+                .addContainerGap(129, Short.MAX_VALUE))
         );
         mainContentLayout.setVerticalGroup(
             mainContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -556,7 +587,7 @@ public class Menu extends javax.swing.JFrame {
         jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel17.setText("List Transaksi");
 
-        tbl_barang1.setModel(new javax.swing.table.DefaultTableModel(
+        tbl_transaksi.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -567,7 +598,7 @@ public class Menu extends javax.swing.JFrame {
                 "No", "Nama", "Nama Pengirim", "Alamat Tujuan", "Status"
             }
         ));
-        jScrollPane6.setViewportView(tbl_barang1);
+        jScrollPane6.setViewportView(tbl_transaksi);
 
         t_searching1.setText("Searching....");
         t_searching1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -756,7 +787,7 @@ public class Menu extends javax.swing.JFrame {
             contentContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(mainContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(contentContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(content1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(content1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 641, Short.MAX_VALUE))
             .addGroup(contentContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(content2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contentContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -800,7 +831,7 @@ public class Menu extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mainContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 959, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1061,7 +1092,7 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JLabel t_welcome_name;
     private javax.swing.JLabel t_welcome_name1;
     private javax.swing.JTable tbl_barang;
-    private javax.swing.JTable tbl_barang1;
     private javax.swing.JTable tbl_barang2;
+    private javax.swing.JTable tbl_transaksi;
     // End of variables declaration//GEN-END:variables
 }
