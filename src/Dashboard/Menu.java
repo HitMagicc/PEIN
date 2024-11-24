@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
+import DetailedInfo.*;
 /**
  *
  * @author hamud
@@ -38,30 +38,40 @@ public class Menu extends javax.swing.JFrame {
         getDashboardBarangData();
         getDashboardTransaksiData();
         loadDataToKategoriDropDown();
+        getKategoriData();
     }
     private void getBarangData(){
         DefaultTableModel barangModel = (DefaultTableModel) tbl_barang.getModel();
-        barangModel.setRowCount(0);
+        barangModel.setRowCount(0); // Clear the table
         int i=1;
         try {
-            String query = "SELECT barang.id as id, barang.nama AS barang_name, client.nama AS client_name, barang.alamat_penerima AS alamat_tujuan FROM barang JOIN client ON barang.fk_client = client.id";
+            String query = "SELECT barang.id AS id, barang.nama AS barang_name, client.nama AS client_name, barang.alamat_penerima AS alamat_tujuan " +
+                           "FROM barang JOIN client ON barang.fk_client = client.id";
             PreparedStatement st = conn.prepareStatement(query);
             ResultSet rs = st.executeQuery();
-            
-            while(rs.next()){
-                int id = rs.getInt("id");
-                String barangNama= rs.getString("barang_name");
+
+            while (rs.next()) {
+                int id = rs.getInt("id"); // Get the actual `barang.id` from the database
+                String barangNama = rs.getString("barang_name");
                 String clientNama = rs.getString("client_name");
                 String alamat = rs.getString("alamat_tujuan");
-                
-                Object rowData[]= {i++,barangNama, clientNama, alamat};
+
+                // Include the actual ID as the first column (hidden later)
+                Object rowData[] = {id, i++, barangNama, clientNama, alamat};
                 barangModel.addRow(rowData);
             }
             rs.close();
             st.close();
+
+            // Hide the `id` column after populating the table
+            tbl_barang.getColumnModel().getColumn(0).setMinWidth(0);
+            tbl_barang.getColumnModel().getColumn(0).setMaxWidth(0);
+            tbl_barang.getColumnModel().getColumn(0).setPreferredWidth(0);
+
         } catch (Exception e) {
-            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null,e);
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, e);
         }
+
     }
     
     private void getTransaksiData(){
@@ -88,6 +98,30 @@ public class Menu extends javax.swing.JFrame {
             }
             rs.close();
             st.close();
+        } catch (Exception e) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+    private void getKategoriData(){
+        DefaultTableModel kategoriModel = (DefaultTableModel) tbl_kategori.getModel();
+        kategoriModel.setRowCount(0);
+        
+        int i=1;
+        try {
+            String query ="SELECT * FROM kategori";
+            PreparedStatement st = conn.prepareStatement(query);
+            ResultSet rs = st.executeQuery();
+            
+            while(rs.next()){
+                String nama = rs.getString("nama");
+                String desc = rs.getString("description");
+                
+                Object rowData[]={i++, nama, desc};
+                kategoriModel.addRow(rowData);
+            }
+            rs.close();
+            st.close();
+                  
         } catch (Exception e) {
             Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, e);
         }
@@ -193,15 +227,15 @@ public class Menu extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         t_inputBarang_descBarang = new javax.swing.JTextArea();
         jLabel15 = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        btn_input_barang = new javax.swing.JButton();
+        btn_clear_input_barang = new javax.swing.JButton();
         btn_c1_kembali = new javax.swing.JButton();
         dd_inputBarang_kategori = new javax.swing.JComboBox<>();
         content2 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
         tbl_barang = new javax.swing.JTable();
-        t_searching = new javax.swing.JTextField();
+        t_barang_search = new javax.swing.JTextField();
         content3 = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
         jScrollPane6 = new javax.swing.JScrollPane();
@@ -209,17 +243,17 @@ public class Menu extends javax.swing.JFrame {
         t_transaksi_cari = new javax.swing.JTextField();
         content4 = new javax.swing.JPanel();
         jScrollPane8 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        t_kategori_input_desc = new javax.swing.JTextArea();
         jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        btn_input_kategori = new javax.swing.JButton();
         jLabel19 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         btn_c1_kembali1 = new javax.swing.JButton();
         jLabel21 = new javax.swing.JLabel();
-        jTextField8 = new javax.swing.JTextField();
+        t_kategori_input_nama = new javax.swing.JTextField();
         content5 = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
-        tbl_barang2 = new javax.swing.JTable();
+        tbl_kategori = new javax.swing.JTable();
         jLabel18 = new javax.swing.JLabel();
         t_kategori_cari = new javax.swing.JTextField();
 
@@ -502,19 +536,24 @@ public class Menu extends javax.swing.JFrame {
 
         jLabel15.setText("Kategori");
 
-        jButton4.setText("Send");
-        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
+        btn_input_barang.setText("Send");
+        btn_input_barang.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton4MouseClicked(evt);
+                btn_input_barangMouseClicked(evt);
             }
         });
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btn_input_barang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btn_input_barangActionPerformed(evt);
             }
         });
 
-        jButton5.setText("Clear");
+        btn_clear_input_barang.setText("Clear");
+        btn_clear_input_barang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_clear_input_barangActionPerformed(evt);
+            }
+        });
 
         btn_c1_kembali.setText("Kembali");
         btn_c1_kembali.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -566,9 +605,9 @@ public class Menu extends javax.swing.JFrame {
                                     .addComponent(btn_c1_kembali, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(content1Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btn_clear_input_barang, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(32, 32, 32)
-                                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(btn_input_barang, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(69, 69, 69))))
         );
         content1Layout.setVerticalGroup(
@@ -622,8 +661,8 @@ public class Menu extends javax.swing.JFrame {
                 .addComponent(dd_inputBarang_kategori, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(content1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btn_input_barang, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_clear_input_barang, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(51, Short.MAX_VALUE))
         );
 
@@ -634,17 +673,17 @@ public class Menu extends javax.swing.JFrame {
 
         tbl_barang.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "No", "Nama", "Nama Pengirim", "Alamat Tujuan"
+                "id", "No", "Nama", "Nama Pengirim", "Alamat Tujuan"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -652,26 +691,31 @@ public class Menu extends javax.swing.JFrame {
             }
         });
         tbl_barang.setRowHeight(35);
+        tbl_barang.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbl_barangMouseClicked(evt);
+            }
+        });
         jScrollPane5.setViewportView(tbl_barang);
         if (tbl_barang.getColumnModel().getColumnCount() > 0) {
             tbl_barang.getColumnModel().getColumn(0).setResizable(false);
             tbl_barang.getColumnModel().getColumn(0).setPreferredWidth(1);
         }
 
-        t_searching.setText("Searching....");
-        t_searching.addMouseListener(new java.awt.event.MouseAdapter() {
+        t_barang_search.setText("Searching....");
+        t_barang_search.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                t_searchingMouseClicked(evt);
+                t_barang_searchMouseClicked(evt);
             }
         });
-        t_searching.addActionListener(new java.awt.event.ActionListener() {
+        t_barang_search.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_searchingActionPerformed(evt);
+                t_barang_searchActionPerformed(evt);
             }
         });
-        t_searching.addKeyListener(new java.awt.event.KeyAdapter() {
+        t_barang_search.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_searchingKeyTyped(evt);
+                t_barang_searchKeyTyped(evt);
             }
         });
 
@@ -685,7 +729,7 @@ public class Menu extends javax.swing.JFrame {
                     .addGroup(content2Layout.createSequentialGroup()
                         .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_searching, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(t_barang_search, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane5))
                 .addGap(65, 65, 65))
         );
@@ -695,7 +739,7 @@ public class Menu extends javax.swing.JFrame {
                 .addGap(37, 37, 37)
                 .addGroup(content2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(t_searching))
+                    .addComponent(t_barang_search))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(36, Short.MAX_VALUE))
@@ -739,6 +783,11 @@ public class Menu extends javax.swing.JFrame {
                 t_transaksi_cariActionPerformed(evt);
             }
         });
+        t_transaksi_cari.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_transaksi_cariKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout content3Layout = new javax.swing.GroupLayout(content3);
         content3.setLayout(content3Layout);
@@ -768,13 +817,18 @@ public class Menu extends javax.swing.JFrame {
 
         content4.setBackground(new java.awt.Color(255, 255, 255));
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane8.setViewportView(jTextArea2);
+        t_kategori_input_desc.setColumns(20);
+        t_kategori_input_desc.setRows(5);
+        jScrollPane8.setViewportView(t_kategori_input_desc);
 
         jButton6.setText("Clear");
 
-        jButton7.setText("Send");
+        btn_input_kategori.setText("Send");
+        btn_input_kategori.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_input_kategoriActionPerformed(evt);
+            }
+        });
 
         jLabel19.setText("Deskripsi Barang");
 
@@ -795,9 +849,9 @@ public class Menu extends javax.swing.JFrame {
 
         jLabel21.setText("Nama Kategori");
 
-        jTextField8.addActionListener(new java.awt.event.ActionListener() {
+        t_kategori_input_nama.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField8ActionPerformed(evt);
+                t_kategori_input_namaActionPerformed(evt);
             }
         });
 
@@ -810,7 +864,7 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(content4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel19)
                     .addComponent(jLabel21)
-                    .addComponent(jTextField8)
+                    .addComponent(t_kategori_input_nama)
                     .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE))
                 .addContainerGap(59, Short.MAX_VALUE))
             .addGroup(content4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -825,7 +879,7 @@ public class Menu extends javax.swing.JFrame {
                             .addGap(0, 0, Short.MAX_VALUE)
                             .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(32, 32, 32)
-                            .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(btn_input_kategori, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGap(55, 55, 55)))
         );
         content4Layout.setVerticalGroup(
@@ -834,7 +888,7 @@ public class Menu extends javax.swing.JFrame {
                 .addGap(126, 126, 126)
                 .addComponent(jLabel21)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(t_kategori_input_nama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
                 .addComponent(jLabel19)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -848,25 +902,41 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(btn_c1_kembali1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGap(460, 460, 460)
                     .addGroup(content4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_input_kategori, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addContainerGap(37, Short.MAX_VALUE)))
         );
 
         content5.setBackground(new java.awt.Color(255, 255, 255));
 
-        tbl_barang2.setModel(new javax.swing.table.DefaultTableModel(
+        tbl_kategori.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "No", "Nama", "Nama Pengirim", "Alamat Tujuan", "Status"
+                "No", "Nama", "Deskripsi"
             }
-        ));
-        jScrollPane7.setViewportView(tbl_barang2);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tbl_kategori.setRowHeight(35);
+        jScrollPane7.setViewportView(tbl_kategori);
+        if (tbl_kategori.getColumnModel().getColumnCount() > 0) {
+            tbl_kategori.getColumnModel().getColumn(0).setResizable(false);
+            tbl_kategori.getColumnModel().getColumn(0).setPreferredWidth(1);
+            tbl_kategori.getColumnModel().getColumn(1).setResizable(false);
+            tbl_kategori.getColumnModel().getColumn(2).setResizable(false);
+            tbl_kategori.getColumnModel().getColumn(2).setPreferredWidth(1);
+        }
 
         jLabel18.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel18.setText("List Kategori");
@@ -880,6 +950,11 @@ public class Menu extends javax.swing.JFrame {
         t_kategori_cari.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 t_kategori_cariActionPerformed(evt);
+            }
+        });
+        t_kategori_cari.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_kategori_cariKeyTyped(evt);
             }
         });
 
@@ -1043,17 +1118,17 @@ public class Menu extends javax.swing.JFrame {
         mainContent.setVisible(true);
     }//GEN-LAST:event_jLabel1MouseClicked
 
-    private void t_searchingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_searchingActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_t_searchingActionPerformed
+    private void t_barang_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_barang_searchActionPerformed
+        
+    }//GEN-LAST:event_t_barang_searchActionPerformed
 
     private void btn_c1_kembaliMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_c1_kembaliMouseClicked
         
     }//GEN-LAST:event_btn_c1_kembaliMouseClicked
 
-    private void t_searchingMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_t_searchingMouseClicked
-        t_searching.setText("");
-    }//GEN-LAST:event_t_searchingMouseClicked
+    private void t_barang_searchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_t_barang_searchMouseClicked
+        t_barang_search.setText("");
+    }//GEN-LAST:event_t_barang_searchMouseClicked
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
         int response  = JOptionPane.showConfirmDialog(this, "Seriusan mau logout?", "LogOut Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
@@ -1114,39 +1189,49 @@ public class Menu extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_c1_kembali1ActionPerformed
 
-    private void jTextField8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField8ActionPerformed
+    private void t_kategori_input_namaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_kategori_input_namaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField8ActionPerformed
+    }//GEN-LAST:event_t_kategori_input_namaActionPerformed
 
-    private void t_searchingKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_searchingKeyTyped
+    private void t_barang_searchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_barang_searchKeyTyped
         DefaultTableModel barangModel = (DefaultTableModel) tbl_barang.getModel();
-        barangModel.setRowCount(0);
+        barangModel.setRowCount(0); // Clear the table
         int i=1;
-        String key = t_searching.getText();
+        String key = t_barang_search.getText(); // Get the search keyword
         try {
-            String query = "SELECT barang.id as id, barang.nama AS barang_name, client.nama AS client_name, barang.alamat_penerima AS alamat_tujuan FROM barang JOIN client ON barang.fk_client = client.id WHERE barang.id LIKE ? OR barang.nama LIKE ? OR client.nama LIKE ? OR barang.alamat_penerima LIKE ?";
+            String query = "SELECT barang.id AS id, barang.nama AS barang_name, client.nama AS client_name, barang.alamat_penerima AS alamat_tujuan " +
+                           "FROM barang JOIN client ON barang.fk_client = client.id " +
+                           "WHERE barang.id LIKE ? OR barang.nama LIKE ? OR client.nama LIKE ? OR barang.alamat_penerima LIKE ?";
             PreparedStatement st = conn.prepareStatement(query);
-            st.setString(1, "%"+ key + "%");
-            st.setString(2, "%"+ key + "%");
-            st.setString(3, "%"+ key + "%");
-            st.setString(4, "%"+ key + "%");
+            st.setString(1, "%" + key + "%");
+            st.setString(2, "%" + key + "%");
+            st.setString(3, "%" + key + "%");
+            st.setString(4, "%" + key + "%");
+
             ResultSet rs = st.executeQuery();
-            
-            while(rs.next()){
-                int id = rs.getInt("id");
-                String barangNama= rs.getString("barang_name");
+
+            while (rs.next()) {
+                int id = rs.getInt("id"); // Retrieve the actual `barang.id`
+                String barangNama = rs.getString("barang_name");
                 String clientNama = rs.getString("client_name");
                 String alamat = rs.getString("alamat_tujuan");
-                
-                Object rowData[]= {i++,barangNama, clientNama, alamat};
+
+                // Add row data, including the hidden ID column
+                Object rowData[] = {id,i++, barangNama, clientNama, alamat};
                 barangModel.addRow(rowData);
             }
             rs.close();
             st.close();
+
+            // Ensure the `id` column remains hidden
+            tbl_barang.getColumnModel().getColumn(0).setMinWidth(0);
+            tbl_barang.getColumnModel().getColumn(0).setMaxWidth(0);
+            tbl_barang.getColumnModel().getColumn(0).setPreferredWidth(0);
+
         } catch (Exception e) {
-            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null,e);
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, e);
         }
-    }//GEN-LAST:event_t_searchingKeyTyped
+    }//GEN-LAST:event_t_barang_searchKeyTyped
 
     private void inputPengirim(String nama, String alamat,String noTelp){
         String sql = "INSERT INTO client (nama, alamat, no_telp) VALUES (?, ?, ?)";
@@ -1168,35 +1253,304 @@ public class Menu extends javax.swing.JFrame {
             Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null,e);
         }
     }
-    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
+    private void btn_input_barangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_input_barangMouseClicked
         
         
         
-    }//GEN-LAST:event_jButton4MouseClicked
-    private void inputBarang(String nama, Integer fkKategori, Integer fkClient, 
-                                   String description, String namaPenerima, 
-                                   String alamatPenerima, String notelpPenerima){
-        
-        
+    }//GEN-LAST:event_btn_input_barangMouseClicked
+    
+    private int inputClient(String nama, String alamat, String notelp) {
+        String insertClientSQL = "INSERT INTO client(nama, alamat, no_telp) VALUES (?, ?, ?)";
+        try (PreparedStatement ps = conn.prepareStatement(insertClientSQL, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, nama);
+            ps.setString(2, alamat);
+            ps.setString(3, notelp);
+            ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1); // Return generated ID
+            }
+            rs.close();
+        } catch (SQLException e) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return 0;
     }
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private int searchKategoriId(String name) {
+        String query = "SELECT id FROM kategori WHERE nama = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                return rs.getInt("id");
+            }
+            rs.close();
+        } catch (Exception e) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null,e);
+        }
+         return 0;   
+    }
+    private int inputBarang(String nama, int fk_kat, int fk_c, String desc, String nama_penerima, String alamat_penerima, String notelp_penerima) {
+        String insertBarangSQL = "INSERT INTO barang (nama, fk_kategori, fk_client, description, nama_penerima, alamat_penerima, notelp_penerima) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = conn.prepareStatement(insertBarangSQL, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, nama);
+            ps.setInt(2, fk_kat); // ID kategori
+            ps.setInt(3, fk_c);   // ID client
+            ps.setString(4, desc);
+            ps.setString(5, nama_penerima);
+            ps.setString(6, alamat_penerima);
+            ps.setString(7, notelp_penerima);
+            ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1); // Return generated ID
+            }
+            rs.close();
+            getBarangData();
+        } catch (SQLException e) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return 0;
+    }
+    private void clearInputFields() {
+        t_inputBarang_nama.setText("");
+        t_inputBarang_alamat.setText("");
+        t_inputBarang_noTelp.setText("");
+        t_inputBarang_namaPenerima.setText("");
+        t_inputBarang_alamatPenerima.setText("");
+        t_inputBarang_noTelpPenerima.setText("");
+        t_inputBarang_namaBarang.setText("");
+        t_inputBarang_descBarang.setText("");
+        dd_inputBarang_kategori.setSelectedIndex(0); // Reset dropdown to first item
+    }
+    private void inputTransaksi(int fk_barang, int fk_client){
+        String insertTransaksiSQL = "INSERT INTO transaksi (fk_barang, fk_client, tanggal, status) VALUES (?, ?, ?, ?)";
+        try {
+            PreparedStatement ps = conn.prepareStatement(insertTransaksiSQL);
+            ps.setInt(1, fk_barang); // ID barang
+            ps.setInt(2, fk_client); // ID client
+            ps.setDate(3, new java.sql.Date(System.currentTimeMillis())); // Tanggal saat ini
+            ps.setString(4, "masuk"); // Status transaksi
+            int rowsAffected = ps.executeUpdate();
+    
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan");
+                getTransaksiData();
+                clearInputFields();
+            } else {
+                JOptionPane.showMessageDialog(this, "Data gagal ditambahkan");
+            }
+        } catch (Exception e) {
+        }
+    }
+    private void btn_input_barangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_input_barangActionPerformed
         String namaPengirim = t_inputBarang_nama.getText();
         String alamatPengirim = t_inputBarang_alamat.getText();
         String noTelp = t_inputBarang_noTelp.getText();
-        
+
+        if (namaPengirim.isEmpty() || alamatPengirim.isEmpty() || noTelp.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Harap lengkapi data pengirim!");
+            return;
+        }
+
         String namaPenerima = t_inputBarang_namaPenerima.getText();
         String alamatPenerima = t_inputBarang_alamatPenerima.getText();
-        String noTelpPenerima = t_inputBarang_alamatPenerima.getText(); 
-        
-        String barang = t_inputBarang_nama.getText();
+        String noTelpPenerima = t_inputBarang_noTelpPenerima.getText();
+
+        if (namaPenerima.isEmpty() || alamatPenerima.isEmpty() || noTelpPenerima.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Harap lengkapi data penerima!");
+            return;
+        }
+
+        String barang = t_inputBarang_namaBarang.getText();
         String desc = t_inputBarang_descBarang.getText();
-        String kategori = (String) dd_inputBarang_kategori.getSelectedItem();
+        String kategori = dd_inputBarang_kategori.getSelectedItem().toString();
+
+        if (barang.isEmpty() || kategori.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Harap lengkapi data barang!");
+            return;
+        }
+
+        // Input client
+        int idClient = inputClient(namaPengirim, alamatPengirim, noTelp);
+        if (idClient == 0) {
+            JOptionPane.showMessageDialog(this, "Gagal memasukkan data client!");
+            return;
+        }
+
+        // Cari ID kategori
+        int idKategori = searchKategoriId(kategori);
+        if (idKategori == 0) {
+            JOptionPane.showMessageDialog(this, "Kategori tidak ditemukan!");
+            return;
+        }
+
+        // Input barang
+        int idBarang = inputBarang(barang, idKategori, idClient, desc, namaPenerima, alamatPenerima, noTelpPenerima);
+        if (idBarang == 0) {
+            JOptionPane.showMessageDialog(this, "Gagal memasukkan data barang!");
+            return;
+        }
+
+        // Input transaksi
+        inputTransaksi(idBarang, idClient);
+
+
+    }//GEN-LAST:event_btn_input_barangActionPerformed
+
+    private void btn_input_kategoriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_input_kategoriActionPerformed
+        String nama = t_kategori_input_nama.getText();
+        String desc = t_kategori_input_desc.getText();
         
-        inputPengirim(namaPenerima, alamatPengirim, noTelp);
-         
-        
-    }//GEN-LAST:event_jButton4ActionPerformed
+        if(nama.isEmpty()||desc.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Semua kolom harus diisi", "validasi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        try {
+            String query = "INSERT INTO kategori (nama,description) values (?,?)";
+            PreparedStatement st = conn.prepareStatement(query);
+            st.setString(1, nama);
+            st.setString(2, desc);
+            
+            
+            int rowInserted  =st.executeUpdate();
+            if(rowInserted>0){
+                JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan");
+                
+                getKategoriData();
+                loadDataToKategoriDropDown();
+            }
+            st.close();
+        } catch (Exception e) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null,e);
+        }
+    }//GEN-LAST:event_btn_input_kategoriActionPerformed
+
+    private void btn_clear_input_barangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_clear_input_barangActionPerformed
+        t_inputBarang_nama.setText("");
+        t_inputBarang_alamat.setText("");
+        t_inputBarang_noTelp.setText("");
+        t_inputBarang_namaPenerima.setText("");
+        t_inputBarang_alamatPenerima.setText("");
+        t_inputBarang_noTelpPenerima.setText("");
+        t_inputBarang_namaBarang.setText("");
+        t_inputBarang_descBarang.setText("");
+        dd_inputBarang_kategori.setSelectedIndex(0);
+    }//GEN-LAST:event_btn_clear_input_barangActionPerformed
+
+    private void t_transaksi_cariKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_transaksi_cariKeyTyped
+        DefaultTableModel transaksiModel = (DefaultTableModel) tbl_transaksi.getModel();
+        transaksiModel.setRowCount(0); // Clear the table
+        int i = 1;
+        String key = t_transaksi_cari.getText(); // Get the search keyword
+
+        try {
+            // Query to filter transactions based on search criteria
+            String query = "SELECT barang.nama AS barang_name, client.nama AS client_name, transaksi.tanggal, transaksi.status " +
+                           "FROM transaksi " +
+                           "JOIN barang ON transaksi.fk_barang = barang.id " +
+                           "JOIN client ON transaksi.fk_client = client.id " +
+                           "WHERE barang.nama LIKE ? OR client.nama LIKE ? OR transaksi.tanggal LIKE ? OR transaksi.status LIKE ?";
+            PreparedStatement st = conn.prepareStatement(query);
+            st.setString(1, "%" + key + "%"); // Search by barang name
+            st.setString(2, "%" + key + "%"); // Search by client name
+            st.setString(3, "%" + key + "%"); // Search by transaction date
+            st.setString(4, "%" + key + "%"); // Search by transaction status
+            ResultSet rs = st.executeQuery();
+
+            // Populate the table with filtered results
+            while (rs.next()) {
+                String barangNama = rs.getString("barang_name");
+                String clientNama = rs.getString("client_name");
+                String tanggal = rs.getString("tanggal");
+                String status = rs.getString("status");
+
+                Object rowData[] = {i++, barangNama, clientNama, tanggal, status};
+                transaksiModel.addRow(rowData);
+            }
+            rs.close();
+            st.close();
+        } catch (Exception e) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }//GEN-LAST:event_t_transaksi_cariKeyTyped
+
+    private void t_kategori_cariKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_kategori_cariKeyTyped
+        DefaultTableModel kategoriModel = (DefaultTableModel) tbl_kategori.getModel();
+        kategoriModel.setRowCount(0); // Clear the table
+
+        String key = t_kategori_cari.getText(); // Get the search keyword
+
+        try {
+            // Query to filter categories based on the search key
+            String query = "SELECT * FROM kategori WHERE nama LIKE ? OR description LIKE ?";
+            PreparedStatement st = conn.prepareStatement(query);
+            st.setString(1, "%" + key + "%"); // Search in the "nama" column
+            st.setString(2, "%" + key + "%"); // Search in the "description" column
+            ResultSet rs = st.executeQuery();
+
+            int i = 1; // Counter for the row index
+            while (rs.next()) {
+                String nama = rs.getString("nama");
+                String desc = rs.getString("description");
+
+                // Add the filtered rows to the table
+                Object rowData[] = {i++, nama, desc};
+                kategoriModel.addRow(rowData);
+            }
+            rs.close();
+            st.close();
+        } catch (Exception e) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }//GEN-LAST:event_t_kategori_cariKeyTyped
+
+    private void tbl_barangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_barangMouseClicked
+        int selectedRow = tbl_barang.getSelectedRow();
+        if (selectedRow != -1) {
+            int barangId = Integer.parseInt(tbl_barang.getValueAt(selectedRow, 0).toString());
+            try {
+                String query = "SELECT barang.nama AS barang_name, barang.description, kategori.nama AS kategori_name, " +
+                               "client.nama AS nama_pengirim, client.alamat AS alamat_pengirim, client.no_telp AS no_telp_pengirim, " +
+                               "barang.nama_penerima, barang.alamat_penerima, barang.notelp_penerima " +
+                               "FROM barang " +
+                               "JOIN kategori ON barang.fk_kategori = kategori.id " +
+                               "JOIN client ON barang.fk_client = client.id " +
+                               "WHERE barang.id = ?";
+                PreparedStatement st = conn.prepareStatement(query);
+                st.setInt(1, barangId);
+                ResultSet rs = st.executeQuery();
+
+                if (rs.next()) {
+                    String namaPengirim = rs.getString("nama_pengirim");
+                    String alamatPengirim = rs.getString("alamat_pengirim");
+                    String noTelpPengirim = rs.getString("no_telp_pengirim");
+                    String namaPenerima = rs.getString("nama_penerima");
+                    String alamatPenerima = rs.getString("alamat_penerima");
+                    String noTelpPenerima = rs.getString("notelp_penerima");
+                    String namaBarang = rs.getString("barang_name");
+                    String desc = rs.getString("description");
+                    String kategori = rs.getString("kategori_name");
+
+                    // Open the BarangDetailed frame
+                    BarangDetailed barangDetails = new BarangDetailed();
+                    barangDetails.setBarangDetails(barangId, namaPengirim, alamatPengirim, noTelpPengirim,
+                                                   namaPenerima, alamatPenerima, noTelpPenerima,
+                                                   namaBarang, desc, kategori);
+                    barangDetails.setVisible(true);
+                }
+                rs.close();
+                st.close();
+            } catch (Exception e) {
+                Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }//GEN-LAST:event_tbl_barangMouseClicked
     public void loadDataToKategoriDropDown(){
+        dd_inputBarang_kategori.removeAllItems();
         try {
             String sql = "SELECT id, nama FROM kategori"; // Query mengambil data produk
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -1268,6 +1622,9 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton btn_Dashboard5;
     private javax.swing.JButton btn_c1_kembali;
     private javax.swing.JButton btn_c1_kembali1;
+    private javax.swing.JButton btn_clear_input_barang;
+    private javax.swing.JButton btn_input_barang;
+    private javax.swing.JButton btn_input_kategori;
     private javax.swing.JPanel content1;
     private javax.swing.JPanel content2;
     private javax.swing.JPanel content3;
@@ -1275,10 +1632,7 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JPanel content5;
     private javax.swing.JPanel contentContainer;
     private javax.swing.JComboBox<String> dd_inputBarang_kategori;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1307,11 +1661,10 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JTextField jTextField8;
     private javax.swing.JPanel mainContainer;
     private javax.swing.JPanel mainContent;
     private javax.swing.JPanel sideContainer;
+    private javax.swing.JTextField t_barang_search;
     private javax.swing.JTextField t_inputBarang_alamat;
     private javax.swing.JTextField t_inputBarang_alamatPenerima;
     private javax.swing.JTextArea t_inputBarang_descBarang;
@@ -1321,14 +1674,15 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JTextField t_inputBarang_noTelp;
     private javax.swing.JTextField t_inputBarang_noTelpPenerima;
     private javax.swing.JTextField t_kategori_cari;
-    private javax.swing.JTextField t_searching;
+    private javax.swing.JTextArea t_kategori_input_desc;
+    private javax.swing.JTextField t_kategori_input_nama;
     private javax.swing.JTextField t_transaksi_cari;
     private javax.swing.JLabel t_welcome_name;
     private javax.swing.JLabel t_welcome_name1;
     private javax.swing.JTable tbl_barang;
-    private javax.swing.JTable tbl_barang2;
     private javax.swing.JTable tbl_dashboard_barang;
     private javax.swing.JTable tbl_dashboard_transaksi;
+    private javax.swing.JTable tbl_kategori;
     private javax.swing.JTable tbl_transaksi;
     // End of variables declaration//GEN-END:variables
 }
