@@ -141,15 +141,18 @@ public class Menu extends javax.swing.JFrame {
             ResultSet rs = st.executeQuery();
             
             while(rs.next()){
+                int id = rs.getInt("id");
                 String nama = rs.getString("nama");
                 String desc = rs.getString("description");
                 
-                Object rowData[]={i++, nama, desc};
+                Object rowData[]={id,i++, nama, desc};
                 kategoriModel.addRow(rowData);
             }
             rs.close();
             st.close();
-                  
+            tbl_kategori.getColumnModel().getColumn(0).setMinWidth(0);
+            tbl_kategori.getColumnModel().getColumn(0).setMaxWidth(0);
+            tbl_kategori.getColumnModel().getColumn(0).setPreferredWidth(0);
         } catch (Exception e) {
             Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, e);
         }
@@ -954,17 +957,17 @@ public class Menu extends javax.swing.JFrame {
 
         tbl_kategori.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "No", "Nama", "Deskripsi"
+                "id", "No", "Nama", "Deskripsi"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -972,13 +975,18 @@ public class Menu extends javax.swing.JFrame {
             }
         });
         tbl_kategori.setRowHeight(35);
+        tbl_kategori.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbl_kategoriMouseClicked(evt);
+            }
+        });
         jScrollPane7.setViewportView(tbl_kategori);
         if (tbl_kategori.getColumnModel().getColumnCount() > 0) {
             tbl_kategori.getColumnModel().getColumn(0).setResizable(false);
             tbl_kategori.getColumnModel().getColumn(0).setPreferredWidth(1);
-            tbl_kategori.getColumnModel().getColumn(1).setResizable(false);
+            tbl_kategori.getColumnModel().getColumn(1).setPreferredWidth(2);
             tbl_kategori.getColumnModel().getColumn(2).setResizable(false);
-            tbl_kategori.getColumnModel().getColumn(2).setPreferredWidth(1);
+            tbl_kategori.getColumnModel().getColumn(2).setPreferredWidth(4);
         }
 
         jLabel18.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -1543,11 +1551,12 @@ public class Menu extends javax.swing.JFrame {
 
             int i = 1; // Counter for the row index
             while (rs.next()) {
+                int id = rs.getInt("id");
                 String nama = rs.getString("nama");
                 String desc = rs.getString("description");
 
                 // Add the filtered rows to the table
-                Object rowData[] = {i++, nama, desc};
+                Object rowData[] = {id,i++, nama, desc};
                 kategoriModel.addRow(rowData);
             }
             rs.close();
@@ -1562,7 +1571,7 @@ public class Menu extends javax.swing.JFrame {
         if (selectedRow != -1) {
             int barangId = Integer.parseInt(tbl_barang.getValueAt(selectedRow, 0).toString());
             try {
-                String query = "SELECT barang.nama AS barang_name, barang.description, kategori.nama AS kategori_name, " +
+                String query = "SELECT client.id as idPengirim,barang.nama AS barang_name, barang.description,kategori.id as idKategori, kategori.nama AS kategori_name, " +
                                "client.nama AS nama_pengirim, client.alamat AS alamat_pengirim, client.no_telp AS no_telp_pengirim, " +
                                "barang.nama_penerima, barang.alamat_penerima, barang.notelp_penerima " +
                                "FROM barang " +
@@ -1574,6 +1583,8 @@ public class Menu extends javax.swing.JFrame {
                 ResultSet rs = st.executeQuery();
 
                 if (rs.next()) {
+                    int idKategori = rs.getInt("idKategori");
+                    int idPengirim = rs.getInt("idPengirim");
                     String namaPengirim = rs.getString("nama_pengirim");
                     String alamatPengirim = rs.getString("alamat_pengirim");
                     String noTelpPengirim = rs.getString("no_telp_pengirim");
@@ -1586,7 +1597,7 @@ public class Menu extends javax.swing.JFrame {
 
                     // Open the BarangDetailed frame
                     BarangDetailed barangDetails = new BarangDetailed();
-                    barangDetails.setBarangDetails(barangId, namaPengirim, alamatPengirim, noTelpPengirim,
+                    barangDetails.setBarangDetails(idPengirim,barangId,idKategori, namaPengirim, alamatPengirim, noTelpPengirim,
                                                    namaPenerima, alamatPenerima, noTelpPenerima,
                                                    namaBarang, desc, kategori);
                     barangDetails.setVisible(true);
@@ -1605,11 +1616,13 @@ public class Menu extends javax.swing.JFrame {
         if(selectedRow!=-1){
             int transaksiId = Integer.parseInt(tbl_transaksi.getValueAt(selectedRow, 0).toString());
             try {
-                String query = "SELECT transaksi.id AS transaksi_id, transaksi.tanggal as tanggal, transaksi.status as status, client.nama AS client_nama,client.no_telp AS clientTelp, barang.nama AS barang_nama, barang.alamat_penerima AS barang_alamat FROM proyekpbo.transaksi JOIN proyekpbo.client ON transaksi.fk_client = client.id JOIN proyekpbo.barang ON transaksi.fk_barang = barang.id WHERE transaksi.id = ?";
+                String query = "SELECT transaksi.id AS transaksi_id, transaksi.tanggal as tanggal, transaksi.status as status, client.id as clientId,client.nama AS client_nama,client.no_telp AS clientTelp,barang.id as barangId, barang.nama AS barang_nama, barang.alamat_penerima AS barang_alamat FROM proyekpbo.transaksi JOIN proyekpbo.client ON transaksi.fk_client = client.id JOIN proyekpbo.barang ON transaksi.fk_barang = barang.id WHERE transaksi.id = ?";
                 PreparedStatement ps = conn.prepareStatement(query);
                 ps.setInt(1, transaksiId);
                 ResultSet rs = ps.executeQuery();
                 if(rs.next()){
+                    int idClient = rs.getInt("clientId");
+                    int idbarang = rs.getInt("barangId");
                     String tanggal = rs.getString("tanggal");
                     String status = rs.getString("status");
                     String clientNama = rs.getString("client_nama");
@@ -1617,7 +1630,7 @@ public class Menu extends javax.swing.JFrame {
                     String clientTelp = rs.getString("clientTelp");
                     String barangAlamat = rs.getString("barang_alamat");
                     TransaksiDetailed transaksi = new TransaksiDetailed();
-                    transaksi.setTransaksiDetails(transaksiId, barangNama, clientNama, clientTelp, status, tanggal, barangAlamat);
+                    transaksi.setTransaksiDetails(idClient,idbarang,transaksiId, barangNama, clientNama, clientTelp, status, tanggal, barangAlamat);
                     transaksi.setVisible(true);
                 }
                 ps.close();
@@ -1637,6 +1650,33 @@ public class Menu extends javax.swing.JFrame {
         getKategoriData();
         JOptionPane.showMessageDialog(this, "Table telah di-update!", "Informasi", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btn_Dashboard6ActionPerformed
+
+    private void tbl_kategoriMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_kategoriMouseClicked
+        // TODO add your handling code here:
+        int selectedRow = tbl_kategori.getSelectedRow();
+        if(selectedRow!=-1){
+            int kategoriId = Integer.parseInt(tbl_kategori.getValueAt(selectedRow, 0).toString());
+            try {
+                String query = "Select * from kategori where id =?";
+                PreparedStatement ps = conn.prepareStatement(query);
+                ps.setInt(1, kategoriId);
+                ResultSet rs = ps.executeQuery();
+                
+                if(rs.next()){
+                    int id = rs.getInt("id");
+                    String nama = rs.getString("nama");
+                    String desc = rs.getString("description");
+                    KategoriDetailed kategori = new KategoriDetailed();
+                    kategori.setKategoriField(id, nama, desc);
+                    kategori.setVisible(true);
+                }
+                ps.close();
+                rs.close();
+            } catch (Exception e) {
+            }
+        }
+        
+    }//GEN-LAST:event_tbl_kategoriMouseClicked
     public void loadDataToKategoriDropDown(){
         dd_inputBarang_kategori1.removeAllItems();
         try {
@@ -1651,6 +1691,7 @@ public class Menu extends javax.swing.JFrame {
                 dd_inputBarang_kategori1.addItem(type); // Tambahkan objek Product
             }
         } catch (Exception e) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, e);
         }
     }
     
