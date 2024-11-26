@@ -31,11 +31,22 @@ public class BarangDetailed extends javax.swing.JFrame {
      */
     private Connection conn;
     private int barangId;
+    private int idPengirim;
+    private int idKategori;
     public BarangDetailed() {
         conn=Koneksi.getConnection();
         initComponents();
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-       
+        btn_barang_ubah.setEnabled(false);
+        t_alamat_penerima.setEnabled(false);
+        t_alamat_pengirim.setEnabled(false);
+        t_desc_barang.setEnabled(false);
+        t_namaPenerima.setEnabled(false);
+        t_namaPengirim.setEnabled(false);
+        t_nama_barang.setEnabled(false);
+        t_notelp_penerima.setEnabled(false);
+        t_notelp_pengirim.setEnabled(false);
+        dd_kategori_barang.setEnabled(false);
     }
 
     /**
@@ -67,10 +78,11 @@ public class BarangDetailed extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         t_desc_barang = new javax.swing.JTextArea();
         jLabel15 = new javax.swing.JLabel();
-        btn_input_barang = new javax.swing.JButton();
-        btn_clear_input_barang = new javax.swing.JButton();
+        btn_hapus_barang = new javax.swing.JButton();
+        btn_barang_ubah = new javax.swing.JButton();
         btn_c1_kembali = new javax.swing.JButton();
         dd_kategori_barang = new javax.swing.JComboBox<>();
+        btn_mode_ubah = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -113,24 +125,24 @@ public class BarangDetailed extends javax.swing.JFrame {
 
         jLabel15.setText("Kategori");
 
-        btn_input_barang.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Red"));
-        btn_input_barang.setText("Hapus");
-        btn_input_barang.addMouseListener(new java.awt.event.MouseAdapter() {
+        btn_hapus_barang.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Red"));
+        btn_hapus_barang.setText("Hapus");
+        btn_hapus_barang.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btn_input_barangMouseClicked(evt);
+                btn_hapus_barangMouseClicked(evt);
             }
         });
-        btn_input_barang.addActionListener(new java.awt.event.ActionListener() {
+        btn_hapus_barang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_input_barangActionPerformed(evt);
+                btn_hapus_barangActionPerformed(evt);
             }
         });
 
-        btn_clear_input_barang.setBackground(new java.awt.Color(102, 102, 255));
-        btn_clear_input_barang.setText("Ubah");
-        btn_clear_input_barang.addActionListener(new java.awt.event.ActionListener() {
+        btn_barang_ubah.setBackground(new java.awt.Color(102, 102, 255));
+        btn_barang_ubah.setText("Ubah");
+        btn_barang_ubah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_clear_input_barangActionPerformed(evt);
+                btn_barang_ubahActionPerformed(evt);
             }
         });
 
@@ -143,6 +155,14 @@ public class BarangDetailed extends javax.swing.JFrame {
         btn_c1_kembali.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_c1_kembaliActionPerformed(evt);
+            }
+        });
+
+        btn_mode_ubah.setBackground(new java.awt.Color(102, 102, 255));
+        btn_mode_ubah.setText("Mode Ubah");
+        btn_mode_ubah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_mode_ubahActionPerformed(evt);
             }
         });
 
@@ -183,10 +203,11 @@ public class BarangDetailed extends javax.swing.JFrame {
                                     .addComponent(jLabel12)
                                     .addComponent(btn_c1_kembali, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btn_clear_input_barang, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btn_mode_ubah, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btn_barang_ubah, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(32, 32, 32)
-                                .addComponent(btn_input_barang, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(btn_hapus_barang, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(69, 69, 69))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -240,8 +261,9 @@ public class BarangDetailed extends javax.swing.JFrame {
                 .addComponent(dd_kategori_barang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_input_barang, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_clear_input_barang, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btn_hapus_barang, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_barang_ubah, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_mode_ubah, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(51, Short.MAX_VALUE))
         );
 
@@ -268,15 +290,70 @@ public class BarangDetailed extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_t_nama_barangActionPerformed
 
-    private void btn_input_barangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_input_barangMouseClicked
+    private void btn_hapus_barangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_hapus_barangMouseClicked
 
-    }//GEN-LAST:event_btn_input_barangMouseClicked
+    }//GEN-LAST:event_btn_hapus_barangMouseClicked
+    private int SearchTransaksiByIdClient(int id){
+        String query = "SELECT id from transaksi where fk_barang = ? ";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setInt(1, this.barangId);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                return rs.getInt("id");
+            }
+            ps.close();
+            rs.close();
+        } catch (Exception e) {
+        }
+        return 0;
+    }
+    private void hapusTransaksi(int barangId){
+        String deleteTransaksiSQL = "DELETE FROM transaksi WHERE fk_barang = ?";
+        try (PreparedStatement ps = conn.prepareStatement(deleteTransaksiSQL)) {
+            ps.setInt(1, barangId); // Set the barang ID to delete
 
-    private void btn_input_barangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_input_barangActionPerformed
-        
+            int rowsAffected = ps.executeUpdate();
 
-    }//GEN-LAST:event_btn_input_barangActionPerformed
-    private void updatePengirim(String nama, String alamat,String noTelp){
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(this, "Data transaksi berhasil dihapus");
+            } else {
+                JOptionPane.showMessageDialog(this, "Data transaksi tidak ditemukan atau gagal dihapus");
+            }
+        } catch (Exception e) {
+            Logger.getLogger(BarangDetailed.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+    private void hapusBarang(int idBarang){
+        String deleteBarangSQL = "DELETE FROM barang WHERE id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(deleteBarangSQL)) {
+            ps.setInt(1, idBarang); // ID barang to delete
+
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(this, "Data barang berhasil dihapus");
+                // Refresh the table or list
+            } else {
+                JOptionPane.showMessageDialog(this, "Data barang tidak ditemukan atau gagal dihapus");
+            }
+        } catch (Exception e) {
+            Logger.getLogger(BarangDetailed.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+    private void btn_hapus_barangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_hapus_barangActionPerformed
+        int response  = JOptionPane.showConfirmDialog(this, "Seriusan mau update?", "Update Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if(response==JOptionPane.YES_OPTION){
+            int id = SearchTransaksiByIdClient(this.barangId);
+            if(id!=0){
+                hapusTransaksi(barangId);
+                hapusBarang(barangId);
+                this.dispose();
+            }
+        }
+
+    }//GEN-LAST:event_btn_hapus_barangActionPerformed
+    private int updatePengirim(int idPengirim,String nama, String alamat,String noTelp){
          String sql = "UPDATE client SET nama = ?, alamat = ?, no_telp = ? WHERE id = ?";
     
         try {
@@ -284,12 +361,13 @@ public class BarangDetailed extends javax.swing.JFrame {
             ps.setString(1, nama);
             ps.setString(2, alamat);
             ps.setString(3, noTelp);
-            ps.setInt(4, barangId); // Ensure you have the client's ID for the WHERE clause
+            ps.setInt(4, idPengirim); // Ensure you have the client's ID for the WHERE clause
 
             int rowsAffected = ps.executeUpdate();
 
             if (rowsAffected > 0) {
-                JOptionPane.showMessageDialog(this, "Data berhasil diperbarui");
+                
+                return 1;
                 
             } else {
                 JOptionPane.showMessageDialog(this, "Data tidak ditemukan atau gagal diperbarui");
@@ -297,11 +375,86 @@ public class BarangDetailed extends javax.swing.JFrame {
         } catch (Exception e) {
             Logger.getLogger(BarangDetailed.class.getName()).log(Level.SEVERE, null, e);
         }
+        return 0 ;
     }
-    private void btn_clear_input_barangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_clear_input_barangActionPerformed
+    private int searchKategoriId(String name) {
+        String query = "SELECT id FROM kategori WHERE nama = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                return rs.getInt("id");
+            }
+            rs.close();
+        } catch (Exception e) {
+            Logger.getLogger(BarangDetailed.class.getName()).log(Level.SEVERE, null,e);
+        }
+         return 0;   
+    }
+    private void updateBarang(int idBarang, String nama, int fk_kat, int fk_c, String desc, String nama_penerima, String alamat_penerima, String notelp_penerima) {
+        String updateBarangSQL = "UPDATE barang SET nama = ?, fk_kategori = ?, fk_client = ?, description = ?, nama_penerima = ?, alamat_penerima = ?, notelp_penerima = ? WHERE id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(updateBarangSQL)) {
+            ps.setString(1, nama);
+            ps.setInt(2, fk_kat); // ID kategori
+            ps.setInt(3, fk_c);   // ID client
+            ps.setString(4, desc);
+            ps.setString(5, nama_penerima);
+            ps.setString(6, alamat_penerima);
+            ps.setString(7, notelp_penerima);
+            ps.setInt(8, idBarang); // ID barang to update
+
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(this, "Data barang berhasil diperbarui");
+                
+            } else {
+                JOptionPane.showMessageDialog(this, "Data barang tidak ditemukan atau gagal diperbarui");
+            }
+        } catch (Exception e) {
+            Logger.getLogger(BarangDetailed.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+
+    private void btn_barang_ubahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_barang_ubahActionPerformed
         int response  = JOptionPane.showConfirmDialog(this, "Seriusan mau update?", "Update Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if(response==JOptionPane.YES_OPTION){
+            //Pengirim
+            int idPengirim=this.idPengirim;
+            String namaPengirim = t_namaPengirim.getText();
+            String alamat = t_alamat_pengirim.getText();
+            String noTelpPengirim = t_notelp_pengirim.getText();
+            //Barang
+            int idBarang = this.barangId;
+            String namaPenerima = t_namaPenerima.getText();
+            String alamatPenerima = t_alamat_penerima.getText();
+            String noTelpPenerima = t_alamat_penerima.getText();
+            String namaBarang= t_nama_barang.getText();
+            String descBarang = t_desc_barang.getText();
+            //Kategori
+            
+            String namaKategori = dd_kategori_barang.getSelectedItem().toString();
+            
+            // Input client
+            int idClient = updatePengirim(idPengirim,namaPengirim, alamat, noTelpPengirim);
+            if (idClient == 0) {
+                JOptionPane.showMessageDialog(this, "Gagal update data client!");
+                return;
+            }
+            // Cari ID kategori
+            int idKategori = searchKategoriId(namaKategori);
+            if (idKategori == 0) {
+                JOptionPane.showMessageDialog(this, "Kategori tidak ditemukan!");
+                return;
+            }
+            
+            // Update Barang
+            //int idBarang, String nama, int fk_kat, int fk_c, String desc, String nama_penerima, String alamat_penerima, String notelp_penerima
+            updateBarang(idBarang, namaBarang, idKategori, idPengirim, descBarang, namaPenerima, alamatPenerima, noTelpPenerima);
+        }
         
-    }//GEN-LAST:event_btn_clear_input_barangActionPerformed
+    }//GEN-LAST:event_btn_barang_ubahActionPerformed
 
     private void btn_c1_kembaliMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_c1_kembaliMouseClicked
 
@@ -310,6 +463,34 @@ public class BarangDetailed extends javax.swing.JFrame {
     private void btn_c1_kembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_c1_kembaliActionPerformed
         this.dispose();
     }//GEN-LAST:event_btn_c1_kembaliActionPerformed
+    private void rubahModeEdit(){
+        if(btn_barang_ubah.isEnabled()==true){
+            btn_barang_ubah.setEnabled(false);
+            t_alamat_penerima.setEnabled(false);
+            t_alamat_pengirim.setEnabled(false);
+            t_desc_barang.setEnabled(false);
+            t_namaPenerima.setEnabled(false);
+            t_namaPengirim.setEnabled(false);
+            t_nama_barang.setEnabled(false);
+            t_notelp_penerima.setEnabled(false);
+            t_notelp_pengirim.setEnabled(false);
+            dd_kategori_barang.setEnabled(false);
+        }else{
+            btn_barang_ubah.setEnabled(true);
+            t_alamat_penerima.setEnabled(true);
+            t_alamat_pengirim.setEnabled(true);
+            t_desc_barang.setEnabled(true);
+            t_namaPenerima.setEnabled(true);
+            t_namaPengirim.setEnabled(true);
+            t_nama_barang.setEnabled(true);
+            t_notelp_penerima.setEnabled(true);
+            t_notelp_pengirim.setEnabled(true);
+            dd_kategori_barang.setEnabled(true);
+        }
+    }
+    private void btn_mode_ubahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_mode_ubahActionPerformed
+        rubahModeEdit();
+    }//GEN-LAST:event_btn_mode_ubahActionPerformed
     private void loadCategories() {
         dd_kategori_barang.removeAllItems();
         try {
@@ -325,24 +506,27 @@ public class BarangDetailed extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error loading categories: " + e.getMessage());
         }
     }
-    public void setBarangDetails(int id, String namaPengirim, String alamatPengirim, String noTelpPengirim,
+    public void setBarangDetails(int idPengirim,int idBarang, int idKategori, String namaPengirim, String alamatPengirim, String noTelpPengirim,
                                   String namaPenerima, String alamatPenerima, String noTelpPenerima,
                                   String namaBarang, String desc, String kategori) {
-        this.barangId = id;
-        this.setTitle("Barangv"+barangId);
-        label_barangID.setText("Barang ID: "+id);
+        this.idPengirim=idPengirim;
         t_namaPengirim.setText(namaPengirim);
+        t_namaPenerima.setText(namaPenerima);
         t_alamat_pengirim.setText(alamatPengirim);
         t_notelp_pengirim.setText(noTelpPengirim);
-        t_namaPenerima.setText(namaPenerima);
+        this.barangId = idBarang;
+        this.idKategori = idKategori;
+        this.setTitle("Barangv"+barangId);
+        label_barangID.setText("Barang ID: "+idBarang);
         t_alamat_penerima.setText(alamatPenerima);
         t_notelp_penerima.setText(noTelpPenerima);
         t_nama_barang.setText(namaBarang);
         t_desc_barang.setText(desc);
-        dd_kategori_barang.setSelectedItem(kategori);
+        
         
         // Load categories into combo box
         loadCategories();
+        dd_kategori_barang.setSelectedItem(kategori);
     }
     /**
      * @param args the command line arguments
@@ -370,9 +554,10 @@ public class BarangDetailed extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_barang_ubah;
     private javax.swing.JButton btn_c1_kembali;
-    private javax.swing.JButton btn_clear_input_barang;
-    private javax.swing.JButton btn_input_barang;
+    private javax.swing.JButton btn_hapus_barang;
+    private javax.swing.JButton btn_mode_ubah;
     private javax.swing.JComboBox<String> dd_kategori_barang;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
