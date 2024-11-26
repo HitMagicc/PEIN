@@ -3,7 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package DetailedInfo;
-
+import com.formdev.flatlaf.*;// Import Cupertino LAF
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 /**
  *
  * @author hamud

@@ -3,9 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package DetailedInfo;
-
+import java.io.*;
 import javax.swing.JFrame;
 import Koneksi.Koneksi;
+import java.awt.Color;
 import java.sql.Connection;
 import javax.swing.table.DefaultTableModel;
 import java.sql.ResultSet;
@@ -13,6 +14,11 @@ import java.sql.PreparedStatement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+ 
+import com.formdev.flatlaf.*;// Import Cupertino LAF
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -29,6 +35,7 @@ public class BarangDetailed extends javax.swing.JFrame {
         conn=Koneksi.getConnection();
         initComponents();
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+       
     }
 
     /**
@@ -106,7 +113,7 @@ public class BarangDetailed extends javax.swing.JFrame {
 
         jLabel15.setText("Kategori");
 
-        btn_input_barang.setBackground(new java.awt.Color(255, 51, 51));
+        btn_input_barang.setBackground(javax.swing.UIManager.getDefaults().getColor("Actions.Red"));
         btn_input_barang.setText("Hapus");
         btn_input_barang.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -269,8 +276,30 @@ public class BarangDetailed extends javax.swing.JFrame {
         
 
     }//GEN-LAST:event_btn_input_barangActionPerformed
+    private void updatePengirim(String nama, String alamat,String noTelp){
+         String sql = "UPDATE client SET nama = ?, alamat = ?, no_telp = ? WHERE id = ?";
+    
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, nama);
+            ps.setString(2, alamat);
+            ps.setString(3, noTelp);
+            ps.setInt(4, barangId); // Ensure you have the client's ID for the WHERE clause
 
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(this, "Data berhasil diperbarui");
+                
+            } else {
+                JOptionPane.showMessageDialog(this, "Data tidak ditemukan atau gagal diperbarui");
+            }
+        } catch (Exception e) {
+            Logger.getLogger(BarangDetailed.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
     private void btn_clear_input_barangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_clear_input_barangActionPerformed
+        int response  = JOptionPane.showConfirmDialog(this, "Seriusan mau update?", "Update Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         
     }//GEN-LAST:event_btn_clear_input_barangActionPerformed
 
@@ -300,6 +329,7 @@ public class BarangDetailed extends javax.swing.JFrame {
                                   String namaPenerima, String alamatPenerima, String noTelpPenerima,
                                   String namaBarang, String desc, String kategori) {
         this.barangId = id;
+        this.setTitle("Barangv"+barangId);
         label_barangID.setText("Barang ID: "+id);
         t_namaPengirim.setText(namaPengirim);
         t_alamat_pengirim.setText(alamatPengirim);
@@ -310,7 +340,7 @@ public class BarangDetailed extends javax.swing.JFrame {
         t_nama_barang.setText(namaBarang);
         t_desc_barang.setText(desc);
         dd_kategori_barang.setSelectedItem(kategori);
-
+        
         // Load categories into combo box
         loadCategories();
     }
@@ -324,19 +354,9 @@ public class BarangDetailed extends javax.swing.JFrame {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(BarangDetailed.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(BarangDetailed.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(BarangDetailed.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            // Set FlatLaf Light look and feel
+            UIManager.setLookAndFeel(new FlatMacLightLaf());
+        } catch (UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(BarangDetailed.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
