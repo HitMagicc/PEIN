@@ -67,7 +67,6 @@ public class Auth extends javax.swing.JFrame {
 
         p_register.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel5.setIcon(new javax.swing.ImageIcon("C:\\Users\\hamud\\Downloads\\Group 3.png")); // NOI18N
         jLabel5.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel5MouseClicked(evt);
@@ -82,12 +81,34 @@ public class Auth extends javax.swing.JFrame {
                 t_rgst_fnMouseClicked(evt);
             }
         });
+        t_rgst_fn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_rgst_fnActionPerformed(evt);
+            }
+        });
+        t_rgst_fn.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                t_rgst_fnKeyPressed(evt);
+            }
+        });
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel7.setText("Username");
 
+        t_rgst_username.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_rgst_usernameActionPerformed(evt);
+            }
+        });
+
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel8.setText("Email");
+
+        t_rgst_email.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_rgst_emailActionPerformed(evt);
+            }
+        });
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel9.setText("Password");
@@ -104,10 +125,22 @@ public class Auth extends javax.swing.JFrame {
         });
 
         btn_rgst_press.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btn_rgst_press.setText("LOGIN");
+        btn_rgst_press.setText("REGISTER");
         btn_rgst_press.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_rgst_pressActionPerformed(evt);
+            }
+        });
+
+        t_rgst_pass2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_rgst_pass2ActionPerformed(evt);
+            }
+        });
+
+        t_rgst_pass1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_rgst_pass1ActionPerformed(evt);
             }
         });
 
@@ -177,7 +210,6 @@ public class Auth extends javax.swing.JFrame {
 
         p_login.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\hamud\\Downloads\\Group 3.png")); // NOI18N
         jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel1MouseClicked(evt);
@@ -187,8 +219,25 @@ public class Auth extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel2.setText("Username/Email");
 
+        t_lgn_usernameemail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_lgn_usernameemailActionPerformed(evt);
+            }
+        });
+        t_lgn_usernameemail.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                t_lgn_usernameemailKeyPressed(evt);
+            }
+        });
+
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel3.setText("Password");
+
+        t_lgn_pass.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_lgn_passActionPerformed(evt);
+            }
+        });
 
         lgnToRgst.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         lgnToRgst.setText("Yet to have an account? Register Now!");
@@ -351,13 +400,19 @@ public class Auth extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane, "Password tidak sama");
             t_rgst_pass1.setText("");
             t_rgst_pass2.setText("");
-            t_rgst_username.requestFocus();
+            t_rgst_fn.requestFocus();
             return;
         }
 
         // Cek apakah username atau email sudah ada
         if (isUsernameOrEmailExist(username, email)) {
             JOptionPane.showMessageDialog(this, "Username atau Email sudah digunakan", "Validasi", JOptionPane.WARNING_MESSAGE);
+            t_rgst_fn.requestFocus();
+            t_rgst_fn.setText("");
+            t_rgst_email.setText("");
+            t_rgst_username.setText("");
+            t_rgst_pass1.setText("");
+            t_rgst_pass2.setText("");
             return;
         }
 
@@ -378,6 +433,13 @@ public class Auth extends javax.swing.JFrame {
                 p_login.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(this, "Registrasi gagal.", "Error", JOptionPane.ERROR_MESSAGE);
+                t_rgst_fn.setText("");
+                t_rgst_email.setText("");
+                t_rgst_username.setText("");
+                t_rgst_pass1.setText("");
+                t_rgst_pass2.setText("");
+                t_rgst_fn.requestFocus();
+                
             }
             
             // Bersihkan form setelah registrasi
@@ -389,6 +451,7 @@ public class Auth extends javax.swing.JFrame {
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            t_rgst_fn.requestFocus();
         }
     }//GEN-LAST:event_btn_rgst_pressActionPerformed
 
@@ -399,6 +462,52 @@ public class Auth extends javax.swing.JFrame {
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
 
     }//GEN-LAST:event_jLabel1MouseClicked
+
+    private void t_lgn_usernameemailKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_lgn_usernameemailKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER){
+            t_lgn_pass.requestFocus();
+        }
+    }//GEN-LAST:event_t_lgn_usernameemailKeyPressed
+
+    private void t_lgn_usernameemailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_lgn_usernameemailActionPerformed
+        // TODO add your handling code here:
+        t_lgn_pass.requestFocus();
+    }//GEN-LAST:event_t_lgn_usernameemailActionPerformed
+
+    private void t_lgn_passActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_lgn_passActionPerformed
+        // TODO add your handling code here:
+        btn_lgn_press.doClick();
+    }//GEN-LAST:event_t_lgn_passActionPerformed
+
+    private void t_rgst_fnKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_rgst_fnKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_rgst_fnKeyPressed
+
+    private void t_rgst_fnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_rgst_fnActionPerformed
+        // TODO add your handling code here:
+        t_rgst_username.requestFocus();
+    }//GEN-LAST:event_t_rgst_fnActionPerformed
+
+    private void t_rgst_usernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_rgst_usernameActionPerformed
+        // TODO add your handling code here:
+        t_rgst_email.requestFocus();
+    }//GEN-LAST:event_t_rgst_usernameActionPerformed
+
+    private void t_rgst_emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_rgst_emailActionPerformed
+        // TODO add your handling code here:
+        t_rgst_pass1.requestFocus();
+    }//GEN-LAST:event_t_rgst_emailActionPerformed
+
+    private void t_rgst_pass1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_rgst_pass1ActionPerformed
+        // TODO add your handling code here:
+        t_rgst_pass2.requestFocus();
+    }//GEN-LAST:event_t_rgst_pass1ActionPerformed
+
+    private void t_rgst_pass2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_rgst_pass2ActionPerformed
+        // TODO add your handling code here:
+        btn_rgst_press.doClick();
+    }//GEN-LAST:event_t_rgst_pass2ActionPerformed
 
     /**
      * @param args the command line arguments
